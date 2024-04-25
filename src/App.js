@@ -129,7 +129,7 @@ function App() {
           <button 
             className={`secondaryBtn ${isCompleteScreen === false && 'active'}`} 
             onClick={()=>setIsCompleteScreen(false)}>
-            Todo
+            Task
             </button>
 
           <button 
