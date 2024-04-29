@@ -86,7 +86,7 @@ function TodoList({ isCompleteScreen, allTodos, setTodos}){
     if (savedCompletedTodo) {
       setCompletedTodos(savedCompletedTodo);
     }
-  }, [])
+  }, [setTodos, setCompletedTodos])
 
   return (
     <div className='todo-list'>
