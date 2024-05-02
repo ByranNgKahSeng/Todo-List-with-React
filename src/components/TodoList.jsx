@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { BsCheckLg } from "react-icons/bs";
+import { Stack, Box } from "@mui/material";
+import dayjs from 'dayjs';
 
-function TodoList({ isCompleteScreen, allTodos, setTodos}){
+
+function TodoList({ isCompleteScreen, allTodos, setTodos, handleNotification}){
   const [completedTodos, setCompletedTodos] = useState([]);
-  const [currentEdit, setCurrentEdit] = useState("");
-  const [currentEditedItem, setCurrentEditItem] = useState("");
+  const [currentEdit, setCurrentEdit] = useState(" ");
+  const [currentEditedItem, setCurrentEditItem] = useState(" ");
+  
+
 
   // Delete Todo Function
   const handleDeleteTodo = index => {
@@ -40,6 +45,9 @@ function TodoList({ isCompleteScreen, allTodos, setTodos}){
 
     // saved it into local storage
     localStorage.setItem('completedTodos', JSON.stringify(updatedCompletedArr));
+
+    //show success notification
+    handleNotification('success','Task completed !');
   }
 
   // Delete "Completed" Todo Function
@@ -50,6 +58,9 @@ function TodoList({ isCompleteScreen, allTodos, setTodos}){
     // Save it in local storage
     localStorage.setItem('completedTodos', JSON.stringify(reduceTodo));
     setCompletedTodos(reduceTodo);
+
+    //show warning notification
+    handleNotification('warning','Completed Task Deleted !');
   }
 
   const handleEdit = (index, item) => {
@@ -89,6 +100,7 @@ function TodoList({ isCompleteScreen, allTodos, setTodos}){
   }, [setTodos, setCompletedTodos])
 
   return (
+    <Box>
     <div className='todo-list'>
       {isCompleteScreen === false &&
         allTodos.map((item, index) => {
@@ -122,17 +134,20 @@ function TodoList({ isCompleteScreen, allTodos, setTodos}){
           } else {
             // Shows Todo list
             return (
-              <div className='todo-list-item' key={index}>
-                <div>
+              <Box className='todo-list-item' key={index}>
+                <Stack>
                   <h3>{item.title}</h3>
                   <p>{item.description}</p>
-                </div>
-                <div>
+                  <p>
+                    <small>Due Date: {dayjs(item.date).format('YYYY-MM-DD') + ' ' + dayjs(item.time).format('HH:mm A')}</small>
+                  </p>
+                </Stack>
+                <Stack direction={'row'}>
                   <AiOutlineDelete className='icon' onClick={() => handleDeleteTodo(index)} title='Delete?' />
                   <BsCheckLg className='check-icon' onClick={() => handleCompleteTodo(index)} title='Complete?' />
                   <AiOutlineEdit className='check-icon' onClick={() => handleEdit(index, item)} title='Edit?' />
-                </div>
-              </div>
+                </Stack>
+              </Box>
             );
           }
         })}
@@ -159,6 +174,8 @@ function TodoList({ isCompleteScreen, allTodos, setTodos}){
           );
         })}
     </div>
+    
+    </Box>
   );
 } 
 

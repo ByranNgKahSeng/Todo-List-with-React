@@ -1,11 +1,15 @@
 import './App.css';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { Stack, Box } from "@mui/material";
 import AddTodo from './components/AddTodo';
-import TodoList from './components/TodoList';
+import TodoList from './components/Todolist';
+import Notification from './components/Alert';
 
 function App() {
   const [isCompleteScreen, setIsCompleteScreen] = useState(false);
   const [allTodos, setTodos] = useState([]);
+  const [showAlert, setShowAlert] = useState(true);
+  const [alertConfig, setAlertConfig] = useState({ type: 'success', message: 'Page Loaded Successfully!' });
  
   const makeTodos = (newTodoItem) => {
     let updatedTodoArr = [...allTodos];
@@ -14,21 +18,25 @@ function App() {
     localStorage.setItem('todolist', JSON.stringify(updatedTodoArr));
   }
 
-  useEffect(() => {
-    let savedTodo = JSON.parse(localStorage.getItem('todolist'));
-    if (savedTodo) {
-      setTodos(savedTodo);
-    }
-  }, []);
+  const handleNotification = ( type1, message1 ) => {
+    // Logic for handling the completion of a todo
+    setAlertConfig({ type: type1, message: message1 });
+    setShowAlert(true);
+  };
+
+  const handleAlertHide = () => {
+    setShowAlert(false);
+  };
 
   return (
-    <div className="App">
+    <Stack className="App">
       <h1>Todo-List</h1>
       <div className='todo-wrapper'>
         
         <AddTodo makeTodos={makeTodos} />
         
-        <div className='btn-area'>
+        <Stack direction="row" className='btn-area'>
+
           <button 
             className={`secondaryBtn ${isCompleteScreen === false && 'active'}`} 
             onClick={()=>setIsCompleteScreen(false)}>
@@ -40,16 +48,38 @@ function App() {
             onClick={()=>setIsCompleteScreen(true)}>
             Completed
             </button>
-        </div>
+        </Stack>
 
         <TodoList 
           isCompleteScreen={isCompleteScreen} 
           allTodos={allTodos} 
           setTodos={setTodos} 
+          handleNotification={handleNotification}
         />
         
       </div>
-    </div>
+
+      <Box direction='column' 
+        sx={{ display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center', // Centers the content vertically within the box
+              alignItems: 'center',     // Centers the content horizontally within the box
+              position: 'fixed', 
+              left: '50%',              // Moves the left edge to the center of the screen
+              bottom: 0,
+              transform: 'translateX(-50%)', // Moves it back 50% of its width, centering it horizontally
+              width: '100%',            // Optional: spans the entire width if needed for design
+              textAlign: 'center',
+              marginBottom:"15px"
+               }}>
+        <Notification 
+        show={showAlert} 
+        type={alertConfig.type}
+        message={alertConfig.message} 
+        onHide={handleAlertHide} 
+        />
+      </Box>
+    </Stack>
   );
 }
 

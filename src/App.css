@@ -60,7 +60,7 @@ h1{
 }
 
 .primaryBtn:hover{
-  background-color: #325158;
+  background-color: #325836;
 }
 
 .secondaryBtn{
@@ -111,6 +111,7 @@ h1{
   font-size: 14px;
   color: #bfe0e2;
   margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 .icon{
@@ -129,7 +130,7 @@ h1{
 }
 
 .check-icon:hover{
-  color: #92cace;
+  color: rgb(0, 230, 122);
 }
 
 .edit-wrapper{
