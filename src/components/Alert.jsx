@@ -1,24 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, Stack } from '@mui/material';
+import { Alert } from '@mui/material';
 
-const Notification = ({ show, type, message, onHide }) => {
-  const [showAlert, setShowAlert] = useState(false);
+const Notification = ({ show, type, message }) => {
+  const [showAlert, setShowAlert] = useState(show);
 
   useEffect(() => {
-    setShowAlert(show);
-    const timeout = setTimeout(() => {
+    if (show) {
+      setShowAlert(true);
+
+      // Set a timeout to hide the notification after 3 seconds
+      const timeout = setTimeout(() => {
+        setShowAlert(false);
+        console.log(`trigger 'show' = "${show}"`);
+      }, 3000);
+
+      // Clean up the timeout when the component unmounts or when `show` changes
+      return () => clearTimeout(timeout);
+    } else {
+      // If `show` changes to `false`, reset showAlert to `false`
       setShowAlert(false);
-      onHide();
-    }, 3000);
-    return () => clearTimeout(timeout);
-  }, [show, onHide]);
+    }
+  }, [show]);
 
   return (
-    <Stack sx={{ width: 'flex' }} spacing={2}>
-      <Alert severity={type} variant='filled' sx={{ display: showAlert ? 'flex' : 'none'}}>
-        {message}
-      </Alert>
-    </Stack>
+    <Alert severity={type} variant="filled" sx={{ display: showAlert ? 'flex' : 'none' }}>
+      {message}
+    </Alert>
   );
 };
 

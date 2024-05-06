@@ -12,20 +12,20 @@ const AddTodo = ({ makeTodos }) => {
   const [newDescription, setNewDescription] = useState("");
   const [newTime, setTime] = useState(dayjs());
   const [newDate, setDate] = useState(dayjs());
-  // Determine if the selected date is today to adjust minTime
-  const minTime = dayjs().isSame(newTime, 'date') ? dayjs() : dayjs().startOf('day');
-
 
   // Add Todo Function
   const handleAddTodo = () => {
+    // Combine date and time to set the deadline
+    const deadline = dayjs(newDate).set('hour', newTime.hour()).set('minute', newTime.minute());
+
     let newTodoItem = {
       title: newTitle,
       description: newDescription,
-      time: newTime,
-      date: newDate,
+      deadline: deadline,  // Use the combined datetime as the deadline
     };
 
-    makeTodos(newTodoItem);
+    makeTodos(newTodoItem);  // Assuming makeTodos handles the new item
+    // Reset form fields
     setNewTitle("");
     setNewDescription("");
     setTime(dayjs());
@@ -42,17 +42,11 @@ const AddTodo = ({ makeTodos }) => {
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
             placeholder="What's the task title?"
-            sx={{'& .MuiFormLabel-root': {
-              // Modify label styles
-              color: 'white',}}}
           />
-
-          
 
           <Button
             variant="contained"
             onClick={handleAddTodo}
-            className="primaryBtn"
             disabled={!newTitle}
           >
             Add
@@ -64,18 +58,13 @@ const AddTodo = ({ makeTodos }) => {
           <MobileDatePicker 
               label="Due Date"
               value={newDate}
-              onChange={(selectedDate) => setDate(selectedDate)} 
+              onChange={(newVal) => setDate(newVal)}
               minDate={dayjs()}
-              sx={{'& .MuiFormLabel-root': {
-                color: 'white',}}}
             />
           <TimePicker
               label="Due Time"
               value={newTime}
-              onChange={(selectedTime) => setTime(selectedTime)}
-              minTime={minTime}
-              sx={{'& .MuiFormLabel-root': {
-                color: 'white',}}}
+              onChange={(newVal) => setTime(newVal)}
             />
           </LocalizationProvider>
       </Stack>
@@ -86,9 +75,6 @@ const AddTodo = ({ makeTodos }) => {
             value={newDescription}
             onChange={(e) => setNewDescription(e.target.value)}
             placeholder="What's the task description?"
-            sx={{'& .MuiFormLabel-root': {
-              // Modify label styles
-              color: 'white',}}}
           />
       </Stack>
     </Box>

@@ -1,9 +1,10 @@
 import './App.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Stack, Box } from "@mui/material";
 import AddTodo from './components/AddTodo';
 import TodoList from './components/Todolist';
 import Notification from './components/Alert';
+
 
 function App() {
   const [isCompleteScreen, setIsCompleteScreen] = useState(false);
@@ -13,21 +14,37 @@ function App() {
  
   const makeTodos = (newTodoItem) => {
     let updatedTodoArr = [...allTodos];
-    updatedTodoArr.push(newTodoItem);
+    updatedTodoArr.push(newTodoItem);  
     setTodos(updatedTodoArr);
     localStorage.setItem('todolist', JSON.stringify(updatedTodoArr));
   }
 
-  const handleNotification = ( type1, message1 ) => {
-    // Logic for handling the completion of a todo
-    setAlertConfig({ type: type1, message: message1 });
+  const handleNotification = (type, message) => {
+    console.log('Notification triggered:', type, message);
+    setAlertConfig({ type, message });
     setShowAlert(true);
   };
 
-  const handleAlertHide = () => {
-    setShowAlert(false);
-  };
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      const apiurl = "http://127.0.0.1:8000/api/api/todos/";
 
+      try {
+        const response = await fetch(apiurl);
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const data = await response.json();
+        console.log(data);
+      } catch (error) {
+        console.error('Error fetching data:', error.message);
+      }
+    }
+
+    fetchData();
+  }, []);
+  
   return (
     <Stack className="App">
       <h1>Todo-List</h1>
@@ -56,7 +73,6 @@ function App() {
           setTodos={setTodos} 
           handleNotification={handleNotification}
         />
-        
       </div>
 
       <Box direction='column' 
@@ -76,10 +92,12 @@ function App() {
         show={showAlert} 
         type={alertConfig.type}
         message={alertConfig.message} 
-        onHide={handleAlertHide} 
         />
       </Box>
+
+      
     </Stack>
+    
   );
 }
 

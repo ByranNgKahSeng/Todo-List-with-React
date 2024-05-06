@@ -129,5 +129,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True  # Be more specific in production
 
 CORS_ORIGIN_WHITELIST = [
-     '<http://localhost:3000>',  # The default port for create-react-app
+     'http://localhost:3000',  # The default port for create-react-app
 ]

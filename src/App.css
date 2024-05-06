@@ -88,8 +88,8 @@ h1{
   margin-bottom: 15px;
 }
 
-.todo-list-item{
-  background-color: #3b757f;
+.todo-list-item,
+.todo-list-item-deadline-passed {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -100,19 +100,30 @@ h1{
   box-shadow: 0px 3px 5px rgb(43,42,42);
 }
 
-.todo-list-item h3{
+.todo-list-item {
+  background-color: #3b757f;
+}
+
+.todo-list-item-deadline-passed {
+  background-color: #797b35
+}
+
+.todo-list-item h3,
+.todo-list-item-deadline-passed h3 {
   font-size: 25px;
   color: #f2f9f9;
   font-weight: bold;
   margin: 0;
 }
 
-.todo-list-item p{
+.todo-list-item p,
+.todo-list-item-deadline-passed p {
   font-size: 14px;
   color: #bfe0e2;
   margin-top: 8px;
   margin-bottom: 8px;
 }
+
 
 .icon{
   font-size:35px;
