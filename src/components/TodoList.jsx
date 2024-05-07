@@ -10,7 +10,7 @@ function TodoList({ isCompleteScreen, allTodos, setTodos, handleNotification }) 
   const [currentEdit, setCurrentEdit] = useState(" ");
   const [currentEditedItem, setCurrentEditItem] = useState(" ");
   const { enqueueSnackbar } = useSnackbar();
-  const [notificationShown, setNotificationShown] = useState([]);
+  
 
   // Delete Todo Function
   const handleDeleteTodo = ({ index, message, variant }) => {
@@ -48,8 +48,6 @@ function TodoList({ isCompleteScreen, allTodos, setTodos, handleNotification }) 
     // saved it into local storage
     localStorage.setItem('completedTodos', JSON.stringify(updatedCompletedArr));
 
-    //show success notification
-    handleNotification('success', 'Task Completed !');
   }
 
   // Delete "Completed" Todo Function
@@ -62,7 +60,7 @@ function TodoList({ isCompleteScreen, allTodos, setTodos, handleNotification }) 
     setCompletedTodos(reduceTodo);
 
     //show warning notification
-    handleNotification('warning', 'Completed Task Deleted !');
+    enqueueSnackbar('Completed Task deleted !', { variant: 'info' });
   }
 
   const handleEdit = (index, item) => {
@@ -90,6 +88,10 @@ function TodoList({ isCompleteScreen, allTodos, setTodos, handleNotification }) 
     setCurrentEdit("");
   }
 
+  
+
+  
+
   useEffect(() => {
     let savedTodo = JSON.parse(localStorage.getItem('todolist')); //convert into array
     let savedCompletedTodo = JSON.parse(localStorage.getItem('completedTodos'));
@@ -99,27 +101,9 @@ function TodoList({ isCompleteScreen, allTodos, setTodos, handleNotification }) 
     if (savedCompletedTodo) {
       setCompletedTodos(savedCompletedTodo);
     }
+
+  }, [allTodos, setTodos, setCompletedTodos]);
   
-    const showNotification = (item, index) => {
-      if (!notificationShown[index]) {
-        enqueueSnackbar(`Deadline for task "${item.title}" has passed!`, { variant: 'info' });
-        setNotificationShown(prev => {
-          const updatedShown = [...prev];
-          updatedShown[index] = true;
-          return updatedShown;
-        });
-      }
-    };
-  
-    allTodos.forEach((item, index) => {
-      const deadline = item.deadline ? dayjs(item.deadline) : null;
-      const hasDeadlinePassed = deadline && deadline.isBefore(dayjs());
-  
-      if (hasDeadlinePassed) {
-        showNotification(item, index);
-      }
-    });
-  }, [allTodos, enqueueSnackbar, notificationShown, setTodos, setCompletedTodos]);
   
 
   return (

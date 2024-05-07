@@ -4,14 +4,14 @@ import { Stack, Box } from "@mui/material";
 import AddTodo from './components/AddTodo';
 import TodoList from './components/Todolist';
 import Notification from './components/Alert';
-
+import dayjs from 'dayjs';
 
 function App() {
   const [isCompleteScreen, setIsCompleteScreen] = useState(false);
   const [allTodos, setTodos] = useState([]);
-  const [showAlert, setShowAlert] = useState(true);
-  const [alertConfig, setAlertConfig] = useState({ type: 'success', message: 'Page Loaded Successfully!' });
- 
+  const [alerts, setAlerts] = useState([]);
+  const [notificationShown, setNotificationShown] = useState([]);
+
   const makeTodos = (newTodoItem) => {
     let updatedTodoArr = [...allTodos];
     updatedTodoArr.push(newTodoItem);  
@@ -20,11 +20,29 @@ function App() {
   }
 
   const handleNotification = (type, message) => {
+    setAlerts(prevAlerts => [...prevAlerts, { type, message }]);
     console.log('Notification triggered:', type, message);
-    setAlertConfig({ type, message });
-    setShowAlert(true);
   };
 
+  const showNotification = (item, index) => {
+    if (!notificationShown[index]) {
+      handleNotification('info', `Deadline for task "${item.title}" has passed!`);
+      setNotificationShown(prev => {
+        const updatedShown = [...prev];
+        updatedShown[index] = true;
+        return updatedShown;
+      });
+    }
+  };
+
+  allTodos.forEach((item, index) => {
+    const deadline = item.deadline ? dayjs(item.deadline) : null;
+    const hasDeadlinePassed = deadline && deadline.isBefore(dayjs());
+
+    if (hasDeadlinePassed) {
+      showNotification(item, index);
+    }
+  });
   
   useEffect(() => {
     const fetchData = async () => {
@@ -43,6 +61,8 @@ function App() {
     }
 
     fetchData();
+
+    
   }, []);
   
   return (
@@ -88,11 +108,8 @@ function App() {
               textAlign: 'center',
               marginBottom:"15px"
                }}>
-        <Notification 
-        show={showAlert} 
-        type={alertConfig.type}
-        message={alertConfig.message} 
-        />
+
+        <Notification alerts={alerts} />
       </Box>
 
       

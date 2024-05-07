@@ -1,0 +1,42 @@
+.RichEditor-root {
+    background: white;
+    border: 1px solid #ddd;
+    font-family: Georgia, serif;
+    font-size: 14px;
+    padding: 30px;
+}
+
+.RichEditor-controls {
+    font-family: Helvetica, sans-serif;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.RichEditor-styleButton {
+    color: rgb(9, 11, 37);
+    cursor: pointer;
+    margin-right: 16px;
+    padding: 2px 0;
+    display: inline-block;
+  }
+  
+.RichEditor-editor {
+    border-top: 1px solid #356169;
+    cursor: text;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.RichEditor-container ::placeholder{
+    color:white;
+}
+
+.DraftEditor-root {
+    position: relative;
+}
+
+.DraftEditor-editorContainer, .DraftEditor-root, .public-DraftEditor-content {
+    height: inherit;
+    text-align: left;
+    text-align: initial;
+}
