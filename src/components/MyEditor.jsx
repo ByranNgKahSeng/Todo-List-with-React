@@ -38,7 +38,7 @@ const MyEditor = ({ description, setDescription }) => {
 
 
   return (
-    <div classname="RichEditor-root" style={{background:"#bfe0e2", padding: "15px", border: "1px solid grey"}}>
+    <div className="RichEditor-root" style={{background:"#bfe0e2", padding: "15px", border: "1px solid grey"}}>
       <div className="RichEditor-controls">
         <span
           className="RichEditor-styleButton"

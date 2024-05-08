@@ -12,12 +12,40 @@ function App() {
   const [alerts, setAlerts] = useState([]);
   const [notificationShown, setNotificationShown] = useState([]);
 
-  const makeTodos = (newTodoItem) => {
-    let updatedTodoArr = [...allTodos];
-    updatedTodoArr.push(newTodoItem);  
-    setTodos(updatedTodoArr);
-    localStorage.setItem('todolist', JSON.stringify(updatedTodoArr));
-  }
+  // Function to fetch data from Django backend
+  const fetchData = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/todos/");
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      const data = await response.json();
+      setTodos(data); // Set the fetched todos in the state
+      console.log(data);
+    } catch (error) {
+      console.error('Error fetching data:', error.message);
+    }
+  };
+
+  // Function to handle adding a new todo
+  const makeTodos = async (newTodoItem) => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/todos/", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newTodoItem),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add todo');
+      }
+      fetchData(); // Fetch updated todo list after adding a new todo
+    } catch (error) {
+      console.error('Error adding todo:', error.message);
+    }
+  };
+  
 
   const handleNotification = (type, message) => {
     setAlerts(prevAlerts => [...prevAlerts, { type, message }]);
@@ -45,24 +73,7 @@ function App() {
   });
   
   useEffect(() => {
-    const fetchData = async () => {
-      const apiurl = "http://127.0.0.1:8000/api/api/todos/";
-
-      try {
-        const response = await fetch(apiurl);
-        if (!response.ok) {
-          throw new Error('Failed to fetch data');
-        }
-        const data = await response.json();
-        console.log(data);
-      } catch (error) {
-        console.error('Error fetching data:', error.message);
-      }
-    }
-
     fetchData();
-
-    
   }, []);
   
   return (
