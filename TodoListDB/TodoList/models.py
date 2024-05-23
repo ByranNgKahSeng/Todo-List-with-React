@@ -1,18 +1,33 @@
 from django.db import models
-from django.utils import timezone
 
-class Todo(models.Model):
-    title = models.CharField(max_length=100)
-    description = models.TextField(blank=True, null=True)
-    deadline = models.DateTimeField(default=timezone.now)
+class Task(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('In Progress', 'In Progress'),
+        ('Completed', 'Completed'),
+    ]
 
-    def __str__(self):
-        return self.title
+    PRIORITY_CHOICES = [
+        ('Low', 'Low'),
+        ('Medium', 'Medium'),
+        ('High', 'High'),
+    ]
 
-class CompletedTodo(models.Model):
-    title = models.CharField(max_length=100)
-    description = models.TextField(blank=True, null=True)
-    completed_time = models.DateTimeField(default=timezone.now)
+    RISK_CHOICES = [
+        ('Low', 'Low'),
+        ('Medium', 'Medium'),
+        ('High', 'High'),
+    ]
+
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    start_time = models.DateTimeField()
+    duration = models.IntegerField() 
+    due_time = models.DateTimeField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='Medium')
+    risk = models.CharField(max_length=20, choices=RISK_CHOICES, default='Medium')
+    effort = models.TextField(blank=True)
 
     def __str__(self):
         return self.title
