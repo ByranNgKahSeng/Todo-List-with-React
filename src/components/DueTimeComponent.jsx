@@ -93,7 +93,6 @@ const DueTimeComponent = ({ value, onChange }) => {
             ...value,
             due_time: calculatedDueTime
         });
-        console.log("Due Time:", calculatedDueTime); // Log the calculated due time to console
     }
 }, [value.start_time, value.duration,]);
 

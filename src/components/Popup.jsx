@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Popup(props) {
 
-    const { title, subtitle, children, openPopup, setOpenPopup, onSubmit } = props;
+    const { title, subtitle, children, openPopup, setOpenPopup } = props;
     const classes = useStyles();
 
     return (
@@ -60,8 +60,8 @@ export default function Popup(props) {
                     Cancel
                 </Button>
                 <Button 
-                    onClick={onSubmit}
                     type="submit"
+                    form="TodoForm"
                     sx={{
                         width:'200px', 
                         border: '1px solid blue',

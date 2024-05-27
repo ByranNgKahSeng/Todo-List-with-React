@@ -13,8 +13,6 @@ export function useForm(initialFValues, validateOnChange = false, validate) {
         });
         if (validateOnChange)
             validate({ [name]: value });
-
-        console.log("Input changed:", { name, value });
     }
 
     const resetForm = () => {

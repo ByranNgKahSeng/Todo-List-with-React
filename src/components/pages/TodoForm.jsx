@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Grid, TextField, Typography } from '@mui/material';
 import { useForm, Form } from '../useForm';
 import CKEditorComponent from '../CKEditorComponent';
@@ -7,14 +7,13 @@ import Controls from '../controls/Controls';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import Button from '../controls/Button';
 
 const initialFValues = {
     id: 0,
     title: '',
     description: '',
     start_time: dayjs(),
-    duration: { value: 0, unit: 'Minutes' },
+    duration: { value: 0, unit: '' },
     due_time: null,
     status: 'Pending',
     priority: 'Medium',
@@ -46,8 +45,6 @@ export default function TodoForm({ recordForEdit, onFormSubmit }) {
         let temp = { ...errors };
         if ('title' in fieldValues)
             temp.title = fieldValues.title ? "" : "This field is required.";
-        if ('duration' in fieldValues)
-            temp.duration = fieldValues.duration ? "" : "This field is required.";
         setErrors({
             ...temp,
         });
@@ -67,7 +64,6 @@ export default function TodoForm({ recordForEdit, onFormSubmit }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("TodoForm submitted with values:", values);
         if (validate()) {
             onFormSubmit(values, resetForm);
         }
@@ -81,11 +77,6 @@ export default function TodoForm({ recordForEdit, onFormSubmit }) {
       setValues({ ...values, description: data });
     };
 
-    //Testing
-    const handleDisplayResult = () => {
-      console.log("Final Input Result:", values);
-    };
-
     useEffect(() => {
         if (recordForEdit != null)
             setValues({
@@ -96,7 +87,7 @@ export default function TodoForm({ recordForEdit, onFormSubmit }) {
 
 
     return (
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} id="TodoForm">
             <Grid container columnSpacing={1}>
                 <Grid container item xs={8} direction="column" rowSpacing={2} style={{ flexWrap: 'nowrap', alignItems: 'stretch', paddingRight:'20px' }}>
                     <Grid item>
@@ -121,7 +112,6 @@ export default function TodoForm({ recordForEdit, onFormSubmit }) {
                             style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
                         />
                     </Grid>
-                    <Grid item><Button onClick={handleDisplayResult}>Results</Button></Grid>
                 </Grid>
                 <Grid container item xs={4} direction="column" rowSpacing={0.5} style={{backgroundColor:'#F3F8FC', padding:'16px', borderRadius:'20px'}}>
                     <Grid item>
