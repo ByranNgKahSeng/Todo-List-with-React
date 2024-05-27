@@ -56,6 +56,7 @@ export default function Popup(props) {
                         border: '1px solid blue',
                         borderRadius: '20px',
                         padding: '12px 24px', 
+                        color:'black'
                     }}>
                     Cancel
                 </Button>
@@ -67,6 +68,8 @@ export default function Popup(props) {
                         border: '1px solid blue',
                         borderRadius: '20px',
                         padding: '12px 24px', 
+                        color:'black',
+                        background:'#C9E0EE',
                     }}>
                     Create
                 </Button>

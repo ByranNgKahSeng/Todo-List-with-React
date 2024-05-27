@@ -7,6 +7,8 @@ import TodoList from "./TodoList";
 import { getTasks, createTask, updateTask, deleteTask } from '../api';
 import dayjs from "dayjs";
 import { DragDropContext } from 'react-beautiful-dnd';
+import { enqueueSnackbar } from "notistack";
+import { type } from "@testing-library/user-event/dist/type";
 
 export default function MainPage() {
     const [tasks, setTasks] = useState([]);
@@ -40,6 +42,7 @@ export default function MainPage() {
     const handleDelete = async (id) => {
         try {
             await deleteTask(id);
+            enqueueSnackbar('Task deleted', { variant:'warning' });
             fetchTasks();
         } catch (error) {
             console.error('There was an error deleting the task!', error);
@@ -83,11 +86,13 @@ export default function MainPage() {
                     status: values.status === 'Completed' ? 'Pending' : 'Completed',
                 };
                 await updateTask(values.id, updatedTask);
+                enqueueSnackbar('Success!', { variant:'success' });
                 const updatedTasks = tasks.map(t => t.id === values.id ? updatedTask : t);
                 setTasks(updatedTasks);
             } else {
                 // Create new task
                 await createTask(formattedValues);
+                enqueueSnackbar('Task Created!', { variant:'info' });
             }
             setOpenPopup(false);
         } catch (error) {
@@ -101,36 +106,40 @@ export default function MainPage() {
 
     const onDragEnd = async (result) => {
         if (!result.destination) return;
-
-        const { source, destination } = result;
-        const updatedTasks = Array.from(tasks);
-
-        const [movedTask] = updatedTasks.splice(source.index, 1);
+    
+        const { destination } = result;
+    
+        let movedTask = tasks.find(
+          (task) => task.id.toString() === result.draggableId.toString()
+        );
+    
         movedTask.status = destination.droppableId;
-        updatedTasks.splice(destination.index, 0, movedTask);
-
-        setTasks(updatedTasks);
-
+    
         const updatedTaskPayload = {
-            id: movedTask.id,
-            title: movedTask.title,
-            description: movedTask.description,
-            start_time: movedTask.start_time,
-            due_time: movedTask.due_time,
-            status: movedTask.status,
-            priority: movedTask.priority,
-            risk: movedTask.risk,
-            effort: movedTask.effort,
-            duration_value: movedTask.duration.value,
-            duration_unit: movedTask.duration.unit
+          id: movedTask.id,
+          title: movedTask.title,
+          description: movedTask.description,
+          start_time: movedTask.start_time,
+          due_time: movedTask.due_time,
+          status: movedTask.status,
+          priority: movedTask.priority,
+          risk: movedTask.risk,
+          effort: movedTask.effort,
+          duration_value: movedTask.duration.value,
+          duration_unit: movedTask.duration.unit,
         };
-
+    
         try {
-            await updateTask(movedTask.id, updatedTaskPayload);
+          await updateTask(movedTask.id, updatedTaskPayload);
+          setTasks((task) => {
+            const filteredTask = task.filter((unit) => unit.id !== movedTask.id);
+    
+            return [...filteredTask, movedTask];
+          });
         } catch (error) {
-            console.error("Error updating task:", error);
+          console.error("Error updating task:", error);
         }
-    }; 
+      };
 
     const completedTasks = tasks.filter(task => task.status === 'Completed').length;
     const totalTasks = tasks.length;
@@ -141,21 +150,69 @@ export default function MainPage() {
             <Container>
                 <Box mt={5} mb={3}>
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                        <Typography variant="h5">Hello, Bella!</Typography>
-                        <Button variant="contained" onClick={() => setOpenPopup(true)} color="primary" startIcon={<AddIcon />}>
-                            Add Task
+                        <Typography variant="h4" fontWeight='bold'>Hello, Bella!</Typography>
+                        <Button
+                            variant="contained"
+                            onClick={() => setOpenPopup(true)}
+                            color="secondary"
+                            style={{
+                                borderRadius: '50%',
+                                width: '64px',
+                                height: '64px',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                            >
+                            <AddIcon style={{ fontSize: 64, color: 'white' }} />
                         </Button>
                     </Box>
 
-                    <Box mt={2} p={2} bgcolor="primary.main" color="black" borderRadius="8px" display="flex" alignItems="center">
+                    <Box mt={2} p={3} bgcolor="primary.main" color="black" borderRadius="8px" display="flex" alignItems="center">
                         <Box flexGrow={1}>
                             <Typography variant="h6">Today's Task</Typography>
                             <Typography variant="body2">May 13th, 2024</Typography>
                             <Typography variant="body2" paddingY={'20px'}>{`${completedTasks}/${totalTasks} Task Completed`}</Typography>
                         </Box>
-                        <Box width="70px">
-                            <CircularProgress variant="determinate" value={progress} color="success" />
-                            <Typography variant="caption" component="div" color="textSecondary">{`${Math.round(progress)}%`}</Typography>
+                        <Box width="90px" mx={'10px'} alignItems={'center'} sx={{ position: 'relative', display: 'inline-flex' }}>
+                            
+                            <CircularProgress
+                                variant="determinate"
+                                value={100}
+                                size={90}
+                                sx={{'& .MuiCircularProgress-circle': {
+                                    stroke: 'white', // Set the grey color for the remaining portion
+                                },}}
+                                style={{ position: 'absolute', top: 0, left: 0 }}
+                            />
+                            <CircularProgress
+                                variant="determinate"
+                                
+                                value={progress}
+                                size={90}
+                                sx={{
+                                color: 'orange', // Set the orange color
+                                '& .MuiCircularProgress-circle': {
+                                    stroke: 'secondary', // Set the grey color for the remaining portion
+                                },
+                                }}
+                            />
+                            <Box
+                                sx={{
+                                top: 3,
+                                left: 0,
+                                bottom: 0,
+                                right: 0,
+                                position: 'absolute',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                }}
+                            >
+                                <Typography variant="caption" component="div" color="white" fontSize={'20px'} fontWeight={'bold'}>
+                                {`${Math.round(progress)}%`}
+                                </Typography>
+                            </Box>
                         </Box>
                     </Box>
                 </Box>
@@ -163,7 +220,7 @@ export default function MainPage() {
                 <DragDropContext onDragEnd={onDragEnd}>
                     {['In Progress', 'Pending', 'Completed'].map((status,index) => (
                         <Box key={index} sx={{ width: '100%' }}>
-                            <Typography variant="h6" pl={'25px'}>{status}</Typography>
+                            <Typography variant="h5" pl={'25px'}>{status}</Typography>
                             <TodoList
                                 tasks={tasks.filter((task) => task.status === status)}
                                 status={status}

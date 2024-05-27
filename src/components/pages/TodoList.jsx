@@ -128,7 +128,7 @@ const TodoList = ({ tasks, status, onEdit, onDelete, onStatusChange }) => {
                               {task.title}
                             </Typography>
                             {task.priority === 'High' && (
-                              <Chip label="High Priority" color="error" style={{ marginLeft: 8, fontSize: '0.75rem', height: '24px' }} />
+                              <Chip label="High Priority" color="secondary" style={{ marginLeft: 8, fontSize: '0.75rem', height: '24px' }} />
                             )}
                           </Box>
                         }
