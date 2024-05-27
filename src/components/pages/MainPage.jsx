@@ -161,8 +161,8 @@ export default function MainPage() {
                 </Box>
 
                 <DragDropContext onDragEnd={onDragEnd}>
-                    {['In Progress', 'Pending', 'Completed'].map((status) => (
-                        <Box key={status} sx={{ width: '100%' }}>
+                    {['In Progress', 'Pending', 'Completed'].map((status,index) => (
+                        <Box key={index} sx={{ width: '100%' }}>
                             <Typography variant="h6" pl={'25px'}>{status}</Typography>
                             <TodoList
                                 tasks={tasks.filter((task) => task.status === status)}
